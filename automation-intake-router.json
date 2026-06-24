@@ -1,0 +1,253 @@
+{
+  "id": "8TPHBBICRLv5T985",
+  "meta": {
+    "instanceId": "0cc4fd632c364513c5f8cef8fa49d0ccffadd5fdf3ee4685e8f2a9f57c68c659",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "automation-intake-router",
+  "tags": [],
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## automation-intake-router\n\n### How it works\n\nThis workflow handles new automation intake submissions from a form. It records each submission in a Google Sheet, then sends a confirmation email to the client followed by an internal agency notification.\n\n### Setup steps\n\n- Configure the form trigger fields to collect the required intake details.\n- Connect Google Sheets credentials and select the target spreadsheet and sheet for appended rows.\n- Connect Gmail credentials for the confirmation and agency notification emails.\n- Review the email recipients, subject lines, and message templates to ensure they use the correct form fields.\n\n### Customization\n\nAdjust the Google Sheet columns, form fields, and Gmail message templates to match the agency’s intake process and branding.",
+        "width": 480,
+        "height": 704
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-608, -304],
+      "id": "d214d0a7-4e1d-40c3-8f1c-113e19f4a911",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Capture and log intake\n\nReceives a submitted intake form and appends the submitted details to a Google Sheet for tracking.",
+        "width": 448,
+        "height": 400,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-48, -256],
+      "id": "7c4b2c3f-1936-4fde-ac2c-3289d1510b92",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Send email notifications\n\nSends a confirmation email to the client, then sends a separate notification email to the agency team.",
+        "width": 304,
+        "height": 496,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [448, -304],
+      "id": "5ac51a08-fa5c-4baa-8c4e-4f121025946f",
+      "name": "Sticky Note2"
+    },
+    {
+      "id": "8276be88-e8a8-4238-b1b4-3efa18311471",
+      "name": "When Form Submitted",
+      "type": "n8n-nodes-base.formTrigger",
+      "position": [0, -32],
+      "webhookId": "18242773-1b52-4aed-9d71-db5e9a73a9fe",
+      "parameters": {
+        "options": {},
+        "formTitle": "Automation Agency — Client Intake Form",
+        "formFields": {
+          "values": [
+            { "fieldLabel": "Name", "requiredField": true },
+            {
+              "fieldType": "email",
+              "fieldLabel": "Email",
+              "requiredField": true
+            },
+            {
+              "fieldType": "dropdown",
+              "fieldLabel": "Business Type",
+              "fieldOptions": {
+                "values": [
+                  { "option": "E-commerce" },
+                  { "option": "Service Business" },
+                  { "option": "Hospitality" },
+                  { "option": "Healthcare" },
+                  { "option": "Other" }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldType": "textarea",
+              "fieldLabel": "What You Want Automated",
+              "requiredField": true
+            }
+          ]
+        },
+        "formDescription": "Tell us about your business and what you'd like automated. We'll be in touch shortly."
+      },
+      "typeVersion": 2.6
+    },
+    {
+      "id": "677c21e1-c597-49a8-a55c-b864286c896d",
+      "name": "Append to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [256, -128],
+      "parameters": {
+        "columns": {
+          "value": {
+            "Name": "={{ $json[\"Name\"] }}",
+            "Email": "={{ $json['Email'] }}",
+            "Submitted At": "={{ $json[\"submittedAt\"] }}",
+            "Business Type": "={{ $json[\"Business Type\"] }}",
+            "What You Want Automated": "={{ $json[\"What You Want Automated\"] }}"
+          },
+          "schema": [
+            {
+              "id": "Name",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "Name",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Email",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Business Type",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "Business Type",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "What You Want Automated",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "What You Want Automated",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submitted At",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "Submitted At",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "append",
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1d6kfve8569bPW9PgSHplUTD5lDODfKJZ-YfI47r0IOQ/edit#gid=0",
+          "cachedResultName": "Sheet1"
+        },
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "https://docs.google.com/spreadsheets/d/1d6kfve8569bPW9PgSHplUTD5lDODfKJZ-YfI47r0IOQ/edit?gid=0#gid=0"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dz5WRVVTNBMfPelT",
+          "name": "Google Sheets account"
+        }
+      },
+      "typeVersion": 4.7
+    },
+    {
+      "id": "b65fdc91-b914-454d-b9d1-b8e6fbb95fa6",
+      "name": "Send Client Confirmation Email",
+      "type": "n8n-nodes-base.gmail",
+      "position": [496, -128],
+      "webhookId": "117910f3-3e60-4a60-b2d2-f1edb334c938",
+      "parameters": {
+        "sendTo": "={{ $json['Email'] }}",
+        "message": "=<p>Hi {{ $json[\"Name\"] }},</p>  <p>Thank you for reaching out to us! We've received your enquiry and will be in touch shortly.</p>  <p>Here's a summary of what you submitted:</p>  <ul>   <li><strong>Business Type:</strong> {{ $json[\"Business Type\"] }}</li>   <li><strong>What You Want Automated:</strong> {{ $json[\"What You Want Automated\"] }}</li> </ul>  <p>We'll review your details and get back to you soon.</p>  <p>The Automation Agency</p>",
+        "options": {},
+        "subject": "=Thanks for reaching out, {{ $json[\"Name\"] }}!"
+      },
+      "credentials": {
+        "gmailOAuth2": { "id": "DanVFf6G6VnNGRfC", "name": "Gmail account" }
+      },
+      "typeVersion": 2.2
+    },
+    {
+      "id": "2596d115-bad4-4a51-89c2-00fa9276a699",
+      "name": "Send Agency Notification Email",
+      "type": "n8n-nodes-base.gmail",
+      "position": [608, 32],
+      "webhookId": "783c1ce0-599a-4ab8-9dd8-91284265203c",
+      "parameters": {
+        "sendTo": "your-email@example.com",
+        "message": "=<h2>New Client Enquiry</h2>  <p><strong>Name:</strong> {{ $('Append to Google Sheet').item.json[\"Name\"]  }} </p> <p><strong>Email:</strong> {{ $('Append to Google Sheet').item.json['Email'] }}</p> <p><strong>Business Type:</strong> {{ $('Append to Google Sheet').item.json['Business Type'] }}</p> <p><strong>What They Want Automated:</strong> {{ $('Append to Google Sheet').item.json['What You Want Automated'] }}</p> <p><strong>Submitted At:</strong> {{ $('Append to Google Sheet').item.json['Submitted At'] }}</p>",
+        "options": {},
+        "subject": "=New Client Intake: {{ $('Append to Google Sheet').item.json[\"Name\"]  }} - {{ $('Append to Google Sheet').item.json['Business Type'] }}"
+      },
+      "credentials": {
+        "gmailOAuth2": { "id": "DanVFf6G6VnNGRfC", "name": "Gmail account" }
+      },
+      "typeVersion": 2.2
+    }
+  ],
+  "active": true,
+  "pinData": {},
+  "settings": {
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "executionOrder": "v1"
+  },
+  "versionId": "1e04cfee-2237-474c-baeb-6e686352e510",
+  "nodeGroups": [],
+  "connections": {
+    "When Form Submitted": {
+      "main": [
+        [{ "node": "Append to Google Sheet", "type": "main", "index": 0 }]
+      ]
+    },
+    "Append to Google Sheet": {
+      "main": [
+        [
+          {
+            "node": "Send Client Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Client Confirmation Email": {
+      "main": [
+        [
+          {
+            "node": "Send Agency Notification Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
